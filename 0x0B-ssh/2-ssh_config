@@ -1,5 +1,5 @@
-Host 54.160.232.154
-  HostName 54.160.232.154
+Host 54.175.45.148
+  HostName 54.175.45.148
   User ubuntu
   IdentityFile ~/.ssh/school
   batchmode yes
