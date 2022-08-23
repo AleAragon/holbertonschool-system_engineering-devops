@@ -1,0 +1,5 @@
+Host 34.228.161.57
+  HostName 34.228.161.57
+  User ubuntu
+  IdentityFile ~/.ssh/school
+  batchmode yes
