@@ -6,12 +6,17 @@
 # Configures /redirect_me as a "301 Moved Permanently".
 # Includes a custom 404 page containing "Ceci n'est pas une page".
 
-sudo apt-get -y update
-sudo apt-get -y upgrade
-sudo apt-get -y install nginx
-sudo ufw allow 'Nginx HTTP'
-sudo echo "Hello World" | sudo tee /var/www/html/index.nginx-debian.html
-sudo sed -i "/server_name _;/ a\\\trewrite ^/redirect_me http://www.holbertonschool.com permanent;" /etc/nginx/sites-available/default
-sudo sed -i "/redirect_me/ a\\\terror_page 404 /custom_404.html;" /etc/nginx/sites-available/default
-sudo echo "Ceci n'est pas une page" | sudo tee /var/www/html/custom_404.html
-service nginx start
+sudo apt-get update
+sudo apt-get install -y nginx
+sudo rm /var/www/html/*
+sudo touch /var/www/html/index.html
+sudo chmod 666 /var/www/html/index.html
+echo "Hello World!" >> /var/www/html/index.html
+new_string="server_name _;\n\n\tlocation /redirect_me {\n\t\treturn 301 https://www.youtube.com/watch?v=dQw4w9WgXcQ;\n\t}"
+sudo sed -i "0,/server_name _;/{s|server_name _;|$new_string|}" /etc/nginx/sites-available/default
+sudo touch /usr/share/nginx/html/error_page.html
+sudo chmod 666 /usr/share/nginx/html/error_page.html
+echo "Ceci n'est pas une page" >> /usr/share/nginx/html/error_page.html
+new_string="server_name _;\n\n\terror_page 404 /error_page.html;\n\n\tlocation = /error_page.html {\n\t\troot /usr/share/nginx/html;\n\t\tinternal;\n\t}"
+sudo sed -i "0,/server_name _;/{s|server_name _;|$new_string|}" /etc/nginx/sites-available/default
+sudo service nginx restart
