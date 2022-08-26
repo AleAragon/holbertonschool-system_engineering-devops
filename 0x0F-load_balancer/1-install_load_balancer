@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
-# Configuring HAProxy
-
-sudo apt-get update
-sudo apt-get install -y haproxy
-proxy_line="
-frontend first_frontend
+# Install haproxy
+FOO="\
+frontend load_balancer
     bind *:80
-    default_backend web_servers
+    mode http
+    default_backend foo
     
-backend web_servers
+backend foo
     balance roundrobin
-    server 4748-web-01 54.175.45.148
-    server 4748-web-02 52.207.249.170"
-
-sudo echo "$proxy_line" | sudo tee /etc/haproxy/haproxy.cfg
-sudo service haproxy restart
+    server foo1 54.175.45.148 check
+    server foo2 52.207.249.170 check
+"
+apt-get -y install software-properties-common
+add-apt-repository -y ppa:vbernat/haproxy-2.0
+apt-get -y update
+apt-get -y install haproxy=2.0.\*
+echo "$FOO" >> /etc/haproxy/haproxy.cfg
+service haproxy start
